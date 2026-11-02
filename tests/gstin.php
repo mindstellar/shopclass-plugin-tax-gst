@@ -13,6 +13,7 @@ use mindstellar\taxgst\Plugin;
 harness_section('GSTIN check');
 pin('a real GSTIN is valid', true, Gstin::isValid('27AAPFU0939F1ZV'));
 pin('another with a Delhi code', true, Gstin::isValid('07AAACM1234A1ZA'));
+pin('a check character of 0 (sum divides by 36) is valid', true, Gstin::isValid('27AAPFU1049F1Z0'));
 pin('a wrong check character fails', false, Gstin::isValid('27AAPFU0939F1ZW'));
 pin('a wrong length fails', false, Gstin::isValid('27AAPFU0939F1Z'));
 pin('an unknown state code fails', false, Gstin::isValid('00AAPFU0939F1ZB'));
