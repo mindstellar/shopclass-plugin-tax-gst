@@ -3,7 +3,7 @@
 Plugin Name: Tax GST
 Plugin URI: https://github.com/mindstellar/shopclass-plugin-tax-gst
 Description: India GST for the Tax plugin: CGST and SGST halves when the buyer is in the seller's state, IGST otherwise, the GSTIN and HSN on the invoice.
-Version: 0.1.0
+Version: 0.2.0
 Author: Navjot Tomer (Mindstellar)
 Author URI: https://mindstellar.com
 Short Name: tax-gst
@@ -45,4 +45,5 @@ osc_register_plugin(osc_plugin_path(__FILE__), array(Plugin::class, 'install'));
 // The filters are inert until the Tax plugin runs them; the notice appears when it is missing.
 osc_add_filter('tax_parts', array(Plugin::class, 'parts'), 10);
 osc_add_filter('tax_invoice', array(Plugin::class, 'invoice'), 10);
+osc_add_filter('tax_buyer_id', array(Plugin::class, 'buyerId'), 10);
 osc_add_hook('admin_page_header', array(Plugin::class, 'notice'), 10);

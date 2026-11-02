@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0
+
+### New
+- Buyer GSTIN at checkout: checked for format, state code and check digit, then printed on the invoice.
+- Invoice shows the place of supply as `07-Delhi`, "Reverse charge: No" and the state code of the buyer's GSTIN.
+- Filter `tax_gst_reverse_charge` prints "Reverse charge: Yes"; amounts are unchanged.
+
 ## 0.1.0
 
 ### New

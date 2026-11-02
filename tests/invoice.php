@@ -16,12 +16,27 @@ $in = Invoice::apply($base, ctx('Delhi', 'Maharashtra'));
 pin('the number is a GSTIN', 'GSTIN', $in['tax_id_label']);
 pin('tax codes are HSN', 'HSN', $in['code_label']);
 pin('rows already there stay first', array('label' => 'Keep', 'value' => 'me'), $in['extra'][0]);
-pin('the buyer\'s state code', array('label' => 'State code', 'value' => '27 Maharashtra'), $in['extra'][1]);
-pin('and the kind of supply', array('label' => 'Supply', 'value' => 'Between states (IGST)'), $in['extra'][2]);
+pin('the place of supply', array('label' => 'Place of supply', 'value' => '27-Maharashtra'), $in['extra'][1]);
+pin('the kind of supply', array('label' => 'Supply', 'value' => 'Between states (IGST)'), $in['extra'][2]);
+pin('reverse charge is stated, No by default', array('label' => 'Reverse charge', 'value' => 'No'), $in['extra'][3]);
 pin('same state reads as CGST and SGST', 'Within the state (CGST and SGST)', Invoice::apply($base, ctx('Delhi', 'Delhi'))['extra'][2]['value']);
+pin('Delhi place of supply', '07-Delhi', Invoice::apply($base, ctx('Delhi', 'Delhi'))['extra'][1]['value']);
+$GLOBALS['filters']['tax_gst_reverse_charge'][] = static fn ($rcm, $order) => $order === 'rcm-order';
+pin('the filter turns reverse charge to Yes', 'Yes', Invoice::apply($base, ctx('Delhi', 'Delhi'), 'rcm-order')['extra'][3]['value']);
+pin('and other orders stay No', 'No', Invoice::apply($base, ctx('Delhi', 'Delhi'), 'other')['extra'][3]['value']);
+unset($GLOBALS['filters']['tax_gst_reverse_charge']);
+$fields = new class () {
+    public function meta(string $k, $d = null)
+    {
+        return $k === '_fields' ? array('tax_id' => array('label' => 'GSTIN', 'value' => '29AAPFU0939F1ZR', 'invoice' => true)) : $d;
+    }
+};
+$withId = Invoice::apply($base, ctx('Delhi', 'Maharashtra'), $fields);
+pin('the buyer GSTIN state code row', array('label' => 'Buyer GSTIN state code', 'value' => '29 Karnataka'), $withId['extra'][4]);
+pin('no such row without a buyer GSTIN', 4, count($in['extra']));
 pin('the title and number are untouched', array('Tax invoice', '07AAACM1234A1Z5'), array($in['title'], $in['tax_id']));
 pin('a label the admin chose is kept', 'Our GSTIN', Invoice::apply(array('tax_id_label' => 'Our GSTIN') + $base, ctx('Delhi', 'Delhi'))['tax_id_label']);
-pin('a buyer state we do not know adds no code row, only the supply', 2, count(Invoice::apply($base, ctx('Narnia', 'Narnia'))['extra']));
+pin('a buyer state we do not know adds no place row, only supply and reverse charge', 3, count(Invoice::apply($base, ctx('Narnia', 'Narnia'))['extra']));
 pin('GST not applying: invoice unchanged', $base, Invoice::apply($base, ctx('Delhi', 'Bavaria', 'IN', 'DE')));
 
 exit(harness_result());

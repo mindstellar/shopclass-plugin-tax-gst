@@ -36,7 +36,7 @@ function osc_settings_value($section, $name)
 
 harness_section('the hooks');
 require __DIR__ . '/../index.php';
-pin('both Tax filters', array('tax_parts', 'tax_invoice'), array_keys($GLOBALS['filters']));
+pin('the Tax filters', array('tax_parts', 'tax_invoice', 'tax_buyer_id'), array_keys($GLOBALS['filters']));
 pin('and the admin notice', array('admin_page_header'), array_keys($GLOBALS['hooks']));
 
 $notice = static function (): string {

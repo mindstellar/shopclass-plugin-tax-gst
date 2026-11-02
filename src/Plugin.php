@@ -46,7 +46,33 @@ final class Plugin
      */
     public static function invoice($invoice, $order = null, $context = array())
     {
-        return is_array($invoice) && is_array($context) ? Invoice::apply($invoice, $context) : $invoice;
+        return is_array($invoice) && is_array($context) ? Invoice::apply($invoice, $context, $order) : $invoice;
+    }
+
+    /**
+     * `tax_buyer_id`: when GST applies, the number is a GSTIN, normalised and format-checked.
+     *
+     * @param mixed $check   {valid, value, message}
+     * @param mixed $raw
+     * @param mixed $context
+     *
+     * @return mixed
+     */
+    public static function buyerId($check, $raw = '', $context = array())
+    {
+        if (!is_array($check) || !is_array($context) || Split::intraState($context) === null) {
+            return $check;
+        }
+        $value          = Gstin::normalise((string) $raw);
+        $check['label'] = 'GSTIN';
+        if ($value === '') {
+            return $check;
+        }
+        if (!Gstin::isValid($value)) {
+            return array('valid' => false, 'value' => $value, 'message' => __('Enter a valid 15-character GSTIN, such as 27AAPFU0939F1ZV.', 'tax-gst')) + $check;
+        }
+
+        return array('valid' => true, 'value' => $value, 'message' => '') + $check;
     }
 
     /**

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Tax GST 0.1.0\n"
+"Project-Id-Version: Tax GST 0.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/mindstellar/shopclass-plugin-tax-gst/issues\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8,26 +8,46 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: \n"
 
-#: src/Invoice.php:47
+#: src/Invoice.php:48
 msgid "Between states (IGST)"
 msgstr ""
 
-#: src/Invoice.php:43
-msgid "State code"
+#: src/Invoice.php:54
+msgid "Buyer GSTIN state code"
 msgstr ""
 
-#: src/Invoice.php:46
-msgid "Supply"
+#: src/Plugin.php:72
+msgid "Enter a valid 15-character GSTIN, such as 27AAPFU0939F1ZV."
 msgstr ""
 
-#: src/Plugin.php:58
-msgid "Tax GST needs the Tax plugin and does nothing without it. Install and enable Tax."
+#: src/Invoice.php:51
+msgid "No"
 msgstr ""
 
-#: src/Plugin.php:62
-msgid "Tax GST: set the seller state under Billing, Tax to one of India's states, so GST can be split into CGST and SGST."
+#: src/Invoice.php:44
+msgid "Place of supply"
+msgstr ""
+
+#: src/Invoice.php:51
+msgid "Reverse charge"
 msgstr ""
 
 #: src/Invoice.php:47
+msgid "Supply"
+msgstr ""
+
+#: src/Plugin.php:84
+msgid "Tax GST needs the Tax plugin and does nothing without it. Install and enable Tax."
+msgstr ""
+
+#: src/Plugin.php:88
+msgid "Tax GST: set the seller state under Billing, Tax to one of India's states, so GST can be split into CGST and SGST."
+msgstr ""
+
+#: src/Invoice.php:48
 msgid "Within the state (CGST and SGST)"
+msgstr ""
+
+#: src/Invoice.php:51
+msgid "Yes"
 msgstr ""
