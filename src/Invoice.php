@@ -15,7 +15,7 @@ namespace mindstellar\taxgst;
 
 /**
  * What GST adds to the Tax plugin's invoice: the number is called GSTIN, tax codes are HSN
- * codes, and rows for the place of supply, the kind of supply and reverse charge.
+ * codes, the place of supply reads 27-Maharashtra, and rows for the kind of supply and reverse charge.
  */
 final class Invoice
 {
@@ -41,7 +41,7 @@ final class Invoice
         $extra = is_array($invoice['extra'] ?? null) ? $invoice['extra'] : array();
         $code  = States::code((string) ($context['state'] ?? ''));
         if ($code !== null) {
-            $extra[] = array('label' => __('Place of supply', 'tax-gst'), 'value' => $code . '-' . States::NAMES[$code]);
+            $invoice['place_of_supply'] = $code . '-' . States::NAMES[$code];
         }
         $extra[] = array(
             'label' => __('Supply', 'tax-gst'),
