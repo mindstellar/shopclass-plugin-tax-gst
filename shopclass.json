@@ -9,7 +9,7 @@
   "icon": "assets/icon.svg",
   "license": "GPL-3.0-or-later",
   "plugins": {
-    "required": {"tax": "^0.1.0"},
+    "required": {"tax": "^0.2.0"},
     "recommended": {}
   },
   "support": {

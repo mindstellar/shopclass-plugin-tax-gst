@@ -46,7 +46,7 @@ $notice = static function (): string {
 };
 check('the admin is told Tax is needed', str_contains($notice(), 'needs the Tax plugin'));
 pin('the filters change nothing when nobody runs them', 'x', osc_apply_filter('tax_parts', 'x'));
-pin('and are only the two hooks', array('tax_parts', 'tax_invoice'), array_keys($GLOBALS['filters']));
+pin('and are only the three filters', array('tax_parts', 'tax_invoice', 'tax_buyer_id'), array_keys($GLOBALS['filters']));
 
 
 exit(harness_result());

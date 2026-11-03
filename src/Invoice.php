@@ -15,17 +15,18 @@ namespace mindstellar\taxgst;
 
 /**
  * What GST adds to the Tax plugin's invoice: the number is called GSTIN, tax codes are HSN
- * codes, and the place of supply gets its state code and the kind of supply.
+ * codes, and rows for the place of supply, the kind of supply and reverse charge.
  */
 final class Invoice
 {
     /**
      * @param array<string,mixed> $invoice the Tax plugin's invoice
      * @param array<string,mixed> $context the Tax plugin's filter context
+     * @param mixed               $order   the order, when the filter passes one
      *
      * @return array<string,mixed>
      */
-    public static function apply(array $invoice, array $context): array
+    public static function apply(array $invoice, array $context, $order = null): array
     {
         $intra = Split::intraState($context);
         if ($intra === null) {
@@ -40,14 +41,36 @@ final class Invoice
         $extra = is_array($invoice['extra'] ?? null) ? $invoice['extra'] : array();
         $code  = States::code((string) ($context['state'] ?? ''));
         if ($code !== null) {
-            $extra[] = array('label' => __('State code', 'tax-gst'), 'value' => $code . ' ' . States::NAMES[$code]);
+            $extra[] = array('label' => __('Place of supply', 'tax-gst'), 'value' => $code . '-' . States::NAMES[$code]);
         }
         $extra[] = array(
             'label' => __('Supply', 'tax-gst'),
             'value' => $intra ? __('Within the state (CGST and SGST)', 'tax-gst') : __('Between states (IGST)', 'tax-gst'),
         );
+        $rcm     = (bool) osc_apply_filter('tax_gst_reverse_charge', false, $order);
+        $extra[] = array('label' => __('Reverse charge', 'tax-gst'), 'value' => $rcm ? __('Yes', 'tax-gst') : __('No', 'tax-gst'));
+        $buyer   = self::buyerStateCode($order);
+        if ($buyer !== null) {
+            $extra[] = array('label' => __('Buyer GSTIN state code', 'tax-gst'), 'value' => $buyer . ' ' . States::NAMES[$buyer]);
+        }
         $invoice['extra'] = $extra;
 
         return $invoice;
+    }
+
+    /**
+     * The state code inside the GSTIN the buyer gave at checkout, if the order has one.
+     *
+     * @param mixed $order
+     */
+    private static function buyerStateCode($order): ?string
+    {
+        if (!is_object($order) || !method_exists($order, 'meta')) {
+            return null;
+        }
+        $fields = $order->meta('_fields', array());
+        $value  = is_array($fields) && is_array($fields['tax_id'] ?? null) ? Gstin::normalise((string) ($fields['tax_id']['value'] ?? '')) : '';
+
+        return $value === '' ? null : Gstin::stateCode($value);
     }
 }

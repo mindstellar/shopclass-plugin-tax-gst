@@ -127,7 +127,7 @@ pin('a buyer in Germany keeps the single GST line', array('tax.gst.18'), array_k
 
 harness_section('orders and invoices');
 $address = array('name' => 'Asha', 'phone' => '9800000000', 'line1' => '1 Marine Drive', 'line2' => '', 'city' => 'Mumbai', 'state' => 'Maharashtra', 'postcode' => '400001', 'country' => 'IN');
-foreach (array('Delhi' => array('kind' => 'Within the state (CGST and SGST)', 'code' => '07 Delhi'), 'Maharashtra' => array('kind' => 'Between states (IGST)', 'code' => '27 Maharashtra')) as $state => $want) {
+foreach (array('Delhi' => array('kind' => 'Within the state (CGST and SGST)', 'code' => '07-Delhi'), 'Maharashtra' => array('kind' => 'Between states (IGST)', 'code' => '27-Maharashtra')) as $state => $want) {
     $order = (new GoodsCheckout())->place($buyer, $cart, array('state' => $state) + $address, 'standard', 'fake')['order'];
     $lines = OrderLineStore::ofOrder($order->getId());
     $taxes = array_values(array_filter($lines, static fn ($l) => $l['kind'] === 'tax'));
@@ -140,7 +140,7 @@ foreach (array('Delhi' => array('kind' => 'Within the state (CGST and SGST)', 'c
     Receipts::render(OrderStore::find($order->getId()), 'https://example.test/', 'Back');
     $html = (string) ob_get_clean();
     check("$state: the receipt is a tax invoice with the GSTIN", str_contains($html, 'Tax invoice #') && str_contains($html, 'GSTIN: 07AAACM1234A1Z5'), $html);
-    check("$state: the state code and the kind of supply", str_contains($html, 'State code: ' . $want['code']) && str_contains($html, 'Supply: ' . $want['kind']), $html);
+    check("$state: the place of supply, reverse charge and the kind of supply", str_contains($html, 'Place of supply: ' . $want['code']) && str_contains($html, 'Reverse charge: No') && str_contains($html, 'Supply: ' . $want['kind']), $html);
     check("$state: summary lines per part", $state === 'Delhi' ? (str_contains($html, 'Taxable value at CGST 9%') && str_contains($html, 'Taxable value at SGST 9%')) : str_contains($html, 'Taxable value at IGST 18%'), $html);
 }
 
