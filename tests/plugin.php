@@ -59,4 +59,25 @@ pin('the parts filter splits', array('cgst', 'sgst'), array_column(osc_apply_fil
 pin('bad arguments change nothing', 'x', osc_apply_filter('tax_parts', 'x', 'not an array'));
 pin('the invoice filter leaves a non-array alone', 'x', osc_apply_filter('tax_invoice', 'x', null, ctx('Delhi', 'Delhi')));
 
+harness_section('with core notices');
+pin('no API, no registration', false, \mindstellar\taxgst\Plugin::registerNotices());
+$GLOBALS['notices'] = array();
+if (!function_exists('osc_add_admin_notice')) {
+    function osc_add_admin_notice($type, $text, $options = array())
+    {
+        $GLOBALS['notices'][$options['id']] = array($type, $text, $options);
+    }
+}
+pin('registers when core has the API', true, \mindstellar\taxgst\Plugin::registerNotices());
+pin('the two checks', array('tax_gst:needs_tax', 'tax_gst:seller_state'), array_keys($GLOBALS['notices']));
+$opts = $GLOBALS['notices']['tax_gst:seller_state'][2];
+pin('placed under Billing settings', 'billing/billing_settings', $opts['menu'] . '/' . $opts['submenu']);
+pin('named by source', 'Tax GST', $opts['source']);
+check('seller state fires for an unknown state', $opts['when']() && str_contains(($GLOBALS['notices']['tax_gst:seller_state'][1])(), 'one of India'));
+check('needs_tax stays quiet while Tax runs', !$GLOBALS['notices']['tax_gst:needs_tax'][2]['when']());
+$GLOBALS['settings']['tax']['seller_state'] = 'Delhi';
+check('seller state quiet for a known state', !$opts['when']());
+$GLOBALS['settings']['tax']['seller_state'] = 'Narnia';
+pin('the page banner steps aside', '', $notice());
+
 exit(harness_result());

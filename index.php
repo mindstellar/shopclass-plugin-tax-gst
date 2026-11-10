@@ -47,3 +47,4 @@ osc_add_filter('tax_parts', array(Plugin::class, 'parts'), 10);
 osc_add_filter('tax_invoice', array(Plugin::class, 'invoice'), 10);
 osc_add_filter('tax_buyer_id', array(Plugin::class, 'buyerId'), 10);
 osc_add_hook('admin_page_header', array(Plugin::class, 'notice'), 10);
+Plugin::registerNotices();
