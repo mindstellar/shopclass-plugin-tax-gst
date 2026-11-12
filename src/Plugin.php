@@ -76,17 +76,67 @@ final class Plugin
     }
 
     /**
-     * An admin notice when the Tax plugin is not running, or its seller details cannot give GST.
+     * The warning text for the Tax plugin missing, or null.
+     */
+    public static function needsTaxText(): ?string
+    {
+        return class_exists('mindstellar\\tax\\Plugin')
+            ? null
+            : __('Tax GST needs the Tax plugin and does nothing without it. Install and enable Tax.', 'tax-gst');
+    }
+
+    /**
+     * The warning text for a seller state GST cannot place, or null.
+     */
+    public static function sellerStateText(): ?string
+    {
+        if (!class_exists('mindstellar\\tax\\Plugin') || !function_exists('osc_settings_value')
+            || strtoupper((string) osc_settings_value('tax', 'seller_country')) !== 'IN'
+            || States::code((string) osc_settings_value('tax', 'seller_state')) !== null) {
+            return null;
+        }
+
+        return __('Tax GST: set the seller state under Billing, Tax to one of India\'s states, so GST can be split into CGST and SGST.', 'tax-gst');
+    }
+
+    /**
+     * Registers the two standing checks with core's notices; older cores use the page banner instead.
+     */
+    public static function registerNotices(): bool
+    {
+        if (!function_exists('osc_add_admin_notice')) {
+            return false;
+        }
+        $link = function_exists('osc_settings_page_url') ? osc_settings_page_url('tax') : '';
+        $base = array(
+            'menu'       => 'billing',
+            'submenu'    => 'billing_settings',
+            'source'     => 'Tax GST',
+            'link'       => $link,
+            'link_label' => __('Tax settings', 'tax-gst'),
+        );
+        osc_add_admin_notice('warning', static fn (): string => (string) self::needsTaxText(), array(
+            'id'   => 'tax_gst:needs_tax',
+            'when' => static fn (): bool => self::needsTaxText() !== null,
+        ) + $base);
+        osc_add_admin_notice('warning', static fn (): string => (string) self::sellerStateText(), array(
+            'id'   => 'tax_gst:seller_state',
+            'when' => static fn (): bool => self::sellerStateText() !== null,
+        ) + $base);
+
+        return true;
+    }
+
+    /**
+     * The page banner for older cores. Core's notices replace it when they exist.
      */
     public static function notice(): void
     {
-        if (!class_exists('mindstellar\\tax\\Plugin')) {
-            $text = __('Tax GST needs the Tax plugin and does nothing without it. Install and enable Tax.', 'tax-gst');
-        } elseif (!function_exists('osc_settings_value') || strtoupper((string) osc_settings_value('tax', 'seller_country')) !== 'IN') {
+        if (function_exists('osc_add_admin_notice')) {
             return;
-        } elseif (States::code((string) osc_settings_value('tax', 'seller_state')) === null) {
-            $text = __('Tax GST: set the seller state under Billing, Tax to one of India\'s states, so GST can be split into CGST and SGST.', 'tax-gst');
-        } else {
+        }
+        $text = self::needsTaxText() ?? self::sellerStateText();
+        if ($text === null) {
             return;
         }
         echo '<div class="flashmessage flashmessage-warning" role="status">' . osc_esc_html($text) . '</div>';

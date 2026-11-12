@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+### Changed
+- On Shopclass 7.1 the missing-Tax and seller-state warnings show in the admin notices bell instead of a banner on every page. Older cores keep the banner.
+
 ## 0.2.0
 
 ### New
