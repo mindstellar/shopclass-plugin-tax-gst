@@ -6,7 +6,7 @@ India GST for the Tax plugin. Tax works out the amounts. This plugin decides how
 
 ## Requirements
 
-- Tax plugin 0.1 or later, enabled. Without it this plugin does nothing and the admin sees a notice.
+- Tax plugin 0.2 or later, enabled. Without it this plugin does nothing and the admin sees a notice.
 - Shopclass 7.1.0 or later, with shop mode
 - PHP 8.2 or later
 
