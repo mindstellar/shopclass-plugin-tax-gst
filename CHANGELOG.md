@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2
+
+### Changed
+- Works with Tax 0.3 and later.
+
 ## 0.2.1
 
 ### Changed
