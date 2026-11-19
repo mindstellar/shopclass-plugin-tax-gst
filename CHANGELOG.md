@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3
+
+### Changed
+- Admin pages are under Plugins → Tax GST.
+
 ## 0.2.2
 
 ### Changed
