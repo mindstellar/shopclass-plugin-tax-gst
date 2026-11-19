@@ -71,7 +71,7 @@ if (!function_exists('osc_add_admin_notice')) {
 pin('registers when core has the API', true, \mindstellar\taxgst\Plugin::registerNotices());
 pin('the two checks', array('tax_gst:needs_tax', 'tax_gst:seller_state'), array_keys($GLOBALS['notices']));
 $opts = $GLOBALS['notices']['tax_gst:seller_state'][2];
-pin('placed under Billing settings', 'billing/billing_settings', $opts['menu'] . '/' . $opts['submenu']);
+pin('placed on the Tax link under Plugins', 'plugins/settings-page-tax', $opts['menu'] . '/' . $opts['submenu']);
 pin('named by source', 'Tax GST', $opts['source']);
 check('seller state fires for an unknown state', $opts['when']() && str_contains(($GLOBALS['notices']['tax_gst:seller_state'][1])(), 'one of India'));
 check('needs_tax stays quiet while Tax runs', !$GLOBALS['notices']['tax_gst:needs_tax'][2]['when']());

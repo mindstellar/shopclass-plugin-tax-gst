@@ -20,7 +20,7 @@ Works on shared hosting. No cron, worker, Redis or shell.
 
 ## Set up
 
-There is nothing to set here. Set up Tax first (Billing → Tax):
+There is nothing to set here. Set up Tax first (Plugins → Tax → Settings):
 
 1. Seller country `IN` and your Seller state, such as Delhi.
 2. Seller tax number (your GSTIN) and the rates: a default, and by category with HSN codes.

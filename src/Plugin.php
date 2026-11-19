@@ -96,7 +96,7 @@ final class Plugin
             return null;
         }
 
-        return __('Tax GST: set the seller state under Billing, Tax to one of India\'s states, so GST can be split into CGST and SGST.', 'tax-gst');
+        return __('Tax GST: set the seller state under Plugins → Tax → Settings to one of India\'s states, so GST can be split into CGST and SGST.', 'tax-gst');
     }
 
     /**
@@ -109,8 +109,8 @@ final class Plugin
         }
         $link = function_exists('osc_settings_page_url') ? osc_settings_page_url('tax') : '';
         $base = array(
-            'menu'       => 'billing',
-            'submenu'    => 'billing_settings',
+            'menu'       => 'plugins',
+            'submenu'    => 'settings-page-tax',
             'source'     => 'Tax GST',
             'link'       => $link,
             'link_label' => __('Tax settings', 'tax-gst'),
